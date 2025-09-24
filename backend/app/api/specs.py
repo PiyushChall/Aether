@@ -1,6 +1,6 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException
+from fastapi import APIRouter, UploadFile, File, HTTPException, Depends
 from sqlalchemy.orm import Session
-from app.core import db, test_generator
+from core import db, models, test_generator
 import json
 import shutil
 import os
@@ -10,8 +10,9 @@ router = APIRouter()
 UPLOAD_DIR = "uploaded_specs"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
+
 @router.post("/upload")
-async def upload_spec(file: UploadFile = File(...)):
+async def upload_spec(file: UploadFile = File(...), session: Session = Depends(db.get_session)):
     # 1️⃣ Save the uploaded file locally
     file_path = os.path.join(UPLOAD_DIR, file.filename)
     with open(file_path, "wb") as f:
@@ -25,9 +26,8 @@ async def upload_spec(file: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail=f"Invalid JSON file: {str(e)}")
 
     # 3️⃣ Store spec in DB
-    session: Session = db.get_session()
     try:
-        new_spec = db.models.APISpec(filename=file.filename, content=json.dumps(spec_json))
+        new_spec = models.APISpec(filename=file.filename, content=json.dumps(spec_json))
         session.add(new_spec)
         session.commit()
         session.refresh(new_spec)
@@ -46,7 +46,7 @@ async def upload_spec(file: UploadFile = File(...)):
     test_count = 0
     for t in ai_tests:
         try:
-            tc = db.models.TestCase(
+            tc = models.TestCase(
                 spec_id=new_spec.id,
                 endpoint=t["endpoint"],
                 method=t["method"].upper(),
