@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+sqlmodel
+httpx
+jinja2
+pydantic
+python-multipart
+sqlalchemy
+requests
+python-dotenv
