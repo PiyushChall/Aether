@@ -1,5 +1,5 @@
 ✨ AETHER – Automated Evaluation & Testing Helper for Endpoint Reliability
-“Your heroic AI QA guardian.”
+"Your heroic AI QA guardian."
 
 🔥 What is AETHER?
 AETHER is an AI-powered, self-improving API testing assistant.
@@ -10,7 +10,7 @@ Builds a regression suite from past bugs.
 Continuously improves itself with every test run.
 Think of AETHER as a heroic guardian watching over your APIs, ensuring reliability and security without you lifting a finger.
 
-🛠️ How It’s Built
+🛠️ How It's Built
 FastAPI backend → orchestrates test generation and execution.
 Async workers → handle test runs efficiently using httpx.
 Database → PostgreSQL or SQLite to store test cases, results, and learned patterns.
@@ -42,9 +42,59 @@ Catches bugs early → AI-generated edge & security tests.
 Continuous coverage → test suite evolves with your API.
 Premium feel → like having a personal AI QA hero.
 
+📦 Setup Instructions
+
+1. Clone the repository
+2. Navigate to the backend directory:
+   ```
+   cd backend
+   ```
+3. Create a virtual environment:
+   ```
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+4. Install dependencies:
+   ```
+   pip install -r requirements.txt
+   ```
+5. Set up environment variables:
+   - Copy `.env.example` to `.env`
+   - Choose one AI provider:
+     * For Hugging Face: Get your API key from https://huggingface.co/settings/tokens
+     * For OpenAI: Get your API key from https://platform.openai.com/api-keys
+   - Add your API key to the `.env` file
+6. Run DB migrations:
+   ```
+   alembic upgrade head
+   ```
+7. Start the server:
+   ```
+   uvicorn app.main:app --reload --port 8000
+   ```
+
+🧪 Testing Your AI Configuration
+
+To test your AI configuration, you can use the provided test scripts:
+
+For Hugging Face (using huggingface_hub library):
+```
+python test_hf_local.py
+```
+
+For OpenAI:
+```
+python test_openai.py
+```
+
+Or the original direct API approach:
+```
+python test_huggingface.py
+```
+
 📦 Roadmap (MVP → Future)
 ✅ MVP: Test generation + execution + results dashboard.
 🔜 CI/CD integration (GitHub/GitLab).
 🔜 Security fuzzing with OWASP payloads.
-🔜 Shared “bug knowledge base” for improved AI coverage.
+🔜 Shared "bug knowledge base" for improved AI coverage.
 🔜 Multi-tenant SaaS with usage & billing.

@@ -9,3 +9,5 @@ sqlalchemy
 requests
 python-dotenv
 alembic
+openai
+huggingface_hub

@@ -36,11 +36,13 @@ async def upload_spec(file: UploadFile = File(...), session: Session = Depends(d
         raise HTTPException(status_code=500, detail=f"DB error: {str(e)}")
 
     # 4️⃣ Generate AI tests
+    ai_tests = []
     try:
         ai_tests = test_generator.generate_ai_tests(json.dumps(spec_json))
+        print(f"Generated {len(ai_tests)} test cases")
     except Exception as e:
-        ai_tests = []
         print(f"AI test generation failed: {e}")
+        # Even if AI test generation fails, we continue to ensure the spec is processed
 
     # 5️⃣ Save generated tests to DB
     test_count = 0
@@ -61,5 +63,6 @@ async def upload_spec(file: UploadFile = File(...), session: Session = Depends(d
     return {
         "spec_id": new_spec.id,
         "filename": file.filename,
-        "generated_tests": test_count
+        "generated_tests": test_count,
+        "message": "Test cases generated successfully" if test_count > 0 else "No test cases generated - using fallback method"
     }
